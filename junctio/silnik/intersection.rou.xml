@@ -1,0 +1,15 @@
+<routes>
+    <vType id="passenger_car" vClass="passenger"/>
+    <vType id="heavy_truck" vClass="truck"/>
+    <vType id="motorcycle_type" vClass="motorcycle"/>
+    <vType id="bicycle_type" vClass="bicycle"/>
+
+    <route id="route_straight" edges="left_center center_right"/>
+    <route id="route_turn_right" edges="bottom_center center_right"/>
+    <route id="route_turn_left" edges="right_center center_bottom"/>
+
+    <vehicle id="car_1" type="passenger_car" route="route_straight" depart="0"/>
+    <vehicle id="truck_1" type="heavy_truck" route="route_turn_left" depart="2"/>
+    <vehicle id="scooter_1" type="motorcycle_type" route="route_turn_right" depart="4"/>
+    <vehicle id="bike_1" type="bicycle_type" route="route_straight" depart="6"/>
+</routes>
