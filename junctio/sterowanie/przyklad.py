@@ -11,7 +11,7 @@
 - Droga W jest zapisana "od C do W", odwrotnie niż pozostałe,
   żeby sprawdzić, czy eksport dobrze rozpoznaje kierunki.
 """
-from model import Droga, Projekt, Wezel
+from junctio.model import Droga, Projekt, Wezel
 
 
 def skrzyzowanie_4_wloty(rodzaj: str = "swiatla") -> Projekt:

@@ -9,7 +9,7 @@ import xml.etree.ElementTree as ET
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from model import Droga, Projekt, Wezel
+from junctio.model import Droga, Projekt, Wezel
 
 # rodzaj węzła w modelu - typ węzła w SUMO
 TYP_WEZLA_SUMO = {
@@ -225,7 +225,7 @@ def znajdz_program(nazwa: str) -> str:
                 return str(kandydat)
     except ImportError:
         pass
-    raise BladEksportu(f"Nie znaleziono '{nazwa}'. Zainstaluj SUMO: pip install eclipse-sumo")
+    raise BladEksportu(f"Nie znaleziono '{nazwa}'. Uruchom: pip install -r requirements.txt")
 
 
 def zbuduj_siec(pliki: PlikiSumo, programy_swiatel: str | Path | None = None,

@@ -1,12 +1,12 @@
 # SUMO w projekcie
 
-[SUMO](https://eclipse.dev/sumo/) to otwarty symulator ruchu drogowego. Używany do
-do sprawdzania skrzyżowań i programów świateł na sprawdzonym silniku.
+[SUMO](https://eclipse.dev/sumo/) to otwarty symulator ruchu drogowego. Używany do sprawdzania skrzyżowań i programów 
+świateł na sprawdzonym silniku.
 
 ## Instalacja
 
 ```bash
-pip install eclipse-sumo sumolib traci
+pip install -r requirements.txt
 netconvert --version        # powinno pokazać "Eclipse SUMO netconvert 1.x"
 ```
 
@@ -37,29 +37,29 @@ Najważniejsze różnice względem naszego modelu:
 ## Szybki start
 
 ```bash
-python demo_sumo.py          # eksport przykładowego skrzyżowania, fazy, weryfikacja
-python demo_sumo.py --gui    # to samo + symulacja w sumo-gui
+python -m junctio.sterowanie.demo_sumo.py          # eksport przykładowego skrzyżowania, fazy, weryfikacja
+python -m junctio.sterowanie.demo_sumo.py --gui    # to samo + symulacja w sumo-gui
 ```
 
 ## Użycie w kodzie
 
-Same pliki węzłów i dróg (tak jak kazał lider 🫡):
+Same pliki węzłów i dróg:
 
 ```python
-from sterowanie.eksport_sumo import eksportuj
+from junctio.sterowanie.eksport_sumo import eksportuj
 eksportuj(projekt, "test")      # tworzy test.nod.xml i test.edg.xml
 ```
 
 ```bash
-netconvert --node-files test.nod.xml --edge-files test.edg.xml -o test.net.xml --offset.disable-normalization true
+netconvert --node-files test.nod.xml --edge-files test.edg.xml -o test.net.xml --offset.disable-normalization true --no-turnarounds true
 sumo-gui -n test.net.xml
 ```
 
 Całość z fazami świateł i weryfikacją:
 
 ```python
-from sterowanie.fazy import Faza, ProgramSwiatel
-from sterowanie.potok import eksportuj_z_fazami
+from junctio.sterowanie.fazy import Faza, ProgramSwiatel
+from junctio.sterowanie.potok import eksportuj_z_fazami
 
 # relacja = [droga wlotowa, droga wylotowa]; lewoskręty na zielonym warunkowym
 program = ProgramSwiatel("C", fazy=[
@@ -68,7 +68,7 @@ program = ProgramSwiatel("C", fazy=[
     Faza("W-E", zielone=[["E", "W"], ["E", "N"], ["W", "E"], ["W", "S"]],
          warunkowe=[["E", "S"], ["W", "N"]], zielone_s=20),
 ])
-wynik = eksportuj_z_fazami(projekt, [program], "wyniki_sumo")
+wynik = eksportuj_z_fazami(projekt, [program], "sumo_out")
 for problem in wynik.problemy:
     print(problem)            # BŁĄD [N-S]: kolizja: ...
 if wynik.ok:

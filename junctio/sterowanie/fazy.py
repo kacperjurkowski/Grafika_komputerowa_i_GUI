@@ -8,7 +8,7 @@ from dataclasses import dataclass, field
 from itertools import combinations
 from pathlib import Path
 
-from skrzyzowanie_sumo import Relacja, SkrzyzowanieSumo
+from .skrzyzowanie_sumo import Relacja, SkrzyzowanieSumo
 
 ZOLTE_PRZEPISY_S = 3.0 #chyba tak jest w przepisach zolte przed czerwonym
 MIN_ZIELONE_S = 5.0

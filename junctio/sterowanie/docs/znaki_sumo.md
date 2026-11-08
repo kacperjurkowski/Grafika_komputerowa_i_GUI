@@ -1,12 +1,12 @@
 # Rodzaje skrzyżowań: nasz edytor → SUMO
 
 Każdy węzeł w `model.py` ma pole `rodzaj`. Przy eksporcie zamieniane na atrybut
-`type` węzła SUMO (`sterowanie/eksport_sumo.py`, słownik `TYP_WEZLA_SUMO`).
+`type` węzła SUMO (`junctio/sterowanie/eksport_sumo.py`, słownik `TYP_WEZLA_SUMO`).
 Test `test_typ_wezla_zgodny_z_tabela` sprawdza każdy wiersz na prawdziwym netconvert.
 
 ## Mapowanie
 
-| W  edytorze | `Wezel.rodzaj` | Typ węzła w SUMO | Znaki w Polsce | Uwagi                                                                                                     |
+| W edytorze | `Wezel.rodzaj` | Typ węzła w SUMO | Znaki w Polsce | Uwagi                                                                                                     |
 |---|---|---|---|-----------------------------------------------------------------------------------------------------------|
 | Brak znaków | `brak` | `right_before_left` | brak znaków albo A-5 (skrzyżowanie dróg równorzędnych) | reguła prawej ręki                                                                                        |
 | Sygnalizacja świetlna | `swiatla` | `traffic_light` | sygnalizatory S-1 / S-3 | bez programu SUMO tworzy domyślny plan świateł; z programem z karty „Fazy świateł” używa naszego (uwaga 4) |
@@ -43,9 +43,9 @@ tam nie reguluje. Przy `--no-turnarounds` netconvert zmienia go na `dead_end`.
    | z południa, o 0,3 s wcześniej | wjeżdża z południa | wjeżdża z południa |
 
 
-4. **Światła.** Gdy węzeł ma rodzaj `swiatla`, a my nie ms programu, netconvert
+4. **Światła.** Gdy węzeł ma rodzaj `swiatla`, a nie ma programu, netconvert
    tworzy domyślny plan świateł (`potok.eksportuj_z_fazami` ostrzega o tym).
-   Program faz pochodzi z karty „Fazy świateł” (`sterowanie/fazy.py`) i zastępuje
+   Program faz pochodzi z karty „Fazy świateł” (`junctio/sterowanie/fazy.py`) i zastępuje
    domyślny plan. SUMO przy kolidujących zielonych nie zgłasza błędu, tylko
    rozstrzyga je regułami pierwszeństwa, dlatego program sprawdzany jest przed
    eksportem. Znaki pod sygnalizatorem (na wypadek wyłączenia świateł) to na razie

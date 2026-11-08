@@ -17,7 +17,7 @@ from pathlib import Path
 
 import sumolib
 
-from eksport_sumo import (droga_z_krawedzi)
+from .eksport_sumo import (droga_z_krawedzi)
 
 KIERUNKI = {
     "s": "prosto",

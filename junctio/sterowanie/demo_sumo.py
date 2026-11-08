@@ -4,12 +4,12 @@ import sys
 import xml.etree.ElementTree as ET
 from pathlib import Path
 
-from eksport_sumo import id_krawedzi, znajdz_program
-from fazy import Faza, ProgramSwiatel, czas_cyklu, czasy_relacji, zbuduj_stany
-from potok import eksportuj_z_fazami
-from przyklad import skrzyzowanie_4_wloty
+from .eksport_sumo import id_krawedzi, znajdz_program
+from .fazy import Faza, ProgramSwiatel, czas_cyklu, czasy_relacji, zbuduj_stany
+from .potok import eksportuj_z_fazami
+from .przyklad import skrzyzowanie_4_wloty
 
-KATALOG = Path("wyniki_sumo")
+KATALOG = Path(__file__).resolve().parents[2] / "sumo_out"
 
 # dwie fazy najpierw N-S potem W-E skret w lewo na warunkowym
 PROGRAM_DOBRY = ProgramSwiatel("C", fazy=[
@@ -58,11 +58,25 @@ def pokaz(program: ProgramSwiatel, tytul: str) -> Path | None:
     print("\nSieć:", wynik.siec or "NIE ZAPISANA (program ma błędy)")
     return wynik.siec
 
+def wloty_wyloty(projekt, wezel="C"):
+    # krawędzie wjeżdżające do węzła i wyjeżdżające z niego, z kierunku każdej drogi
+    wloty, wyloty = {}, {}
+    for d in projekt.drogi:
+        if d.do == wezel:
+            if d.pasy_tam:
+                wloty[d.id] = id_krawedzi(d.id, True)
+            if d.pasy_powrot:
+                wyloty[d.id] = id_krawedzi(d.id, False)
+        elif d.od == wezel:
+            if d.pasy_tam:
+                wyloty[d.id] = id_krawedzi(d.id, True)
+            if d.pasy_powrot:
+                wloty[d.id] = id_krawedzi(d.id, False)
+    return wloty, wyloty
+
 
 def zapisz_trasy(sciezka: Path) -> Path:
-    # drogi N, S, E prowadzą do C a W od C dlatego dla W kierunki są odwrotne
-    wloty = {d: id_krawedzi(d, w_strone_do=(d != "W")) for d in "NSEW"}
-    wyloty = {d: id_krawedzi(d, w_strone_do=(d == "W")) for d in "NSEW"}
+    wloty, wyloty = wloty_wyloty(skrzyzowanie_4_wloty())
     routes = ET.Element("routes")
     for skad, e_z in wloty.items():
         for dokad, e_do in wyloty.items():

@@ -11,10 +11,10 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from pathlib import Path
 
-from model import Projekt
-from eksport_sumo import PlikiSumo, eksportuj_do_sumo, zbuduj_siec
-from fazy import Problem, ProgramSwiatel, ma_bledy, sprawdz_program, zapisz_tll
-from skrzyzowanie_sumo import SkrzyzowanieSumo, wczytaj_skrzyzowanie
+from junctio.model import Projekt
+from .eksport_sumo import PlikiSumo, eksportuj_do_sumo, zbuduj_siec, BladEksportu
+from .fazy import Problem, ProgramSwiatel, ma_bledy, sprawdz_program, zapisz_tll
+from .skrzyzowanie_sumo import SkrzyzowanieSumo, wczytaj_skrzyzowanie
 
 
 @dataclass
@@ -34,6 +34,12 @@ def eksportuj_z_fazami(projekt: Projekt, programy: list[ProgramSwiatel],
                        katalog: str | Path, nazwa: str = "siec") -> WynikEksportu:
     katalog = Path(katalog)
     pliki = eksportuj_do_sumo(projekt, katalog, nazwa)
+    # program świateł tylko dla węzła z rodzajem "swiatla", inaczej netconvert zwróci błąd
+    wezly = {w.id: w for w in projekt.wezly}
+    for p in programy:
+        if p.wezel not in wezly or wezly[p.wezel].rodzaj != "swiatla":
+            raise BladEksportu(
+                f"Program świateł dla '{p.wezel}': ten węzeł nie ma rodzaju 'swiatla'")
     ostrzezenia = list(pliki.ostrzezenia)
 
     z_programem = {p.wezel for p in programy}
