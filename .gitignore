@@ -214,6 +214,9 @@ tempCodeRunnerFile.py
 # Marimo
 marimo/_static/
 marimo/_lsp/
+
+# SUMO
+sumo_out/
 __marimo__/
 
 # Streamlit
