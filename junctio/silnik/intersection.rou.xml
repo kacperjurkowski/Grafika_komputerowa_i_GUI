@@ -1,8 +1,8 @@
 <routes>
-    <vType id="passenger_car" vClass="passenger"/>
-    <vType id="heavy_truck" vClass="truck"/>
-    <vType id="motorcycle_type" vClass="motorcycle"/>
-    <vType id="bicycle_type" vClass="bicycle"/>
+    <vType id="passenger_car" vClass="passenger" carFollowModel="IDM"/>
+    <vType id="heavy_truck" vClass="truck" carFollowModel="IDM"/>
+    <vType id="motorcycle_type" vClass="motorcycle" carFollowModel="IDM"/>
+    <vType id="bicycle_type" vClass="bicycle" carFollowModel="IDM"/>
 
     <route id="route_straight" edges="left_center center_right"/>
     <route id="route_turn_right" edges="bottom_center center_right"/>
