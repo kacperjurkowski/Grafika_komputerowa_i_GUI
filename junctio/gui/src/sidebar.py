@@ -75,7 +75,6 @@ class Sidebar(QWidget):
         head.setSpacing(12)
         
         self.logo = QLabel()
-        # Jeśli masz logo w ICONS, możesz je tutaj ustawić:
         if "logo" in ICONS:
             self.logo.setPixmap(QPixmap(ICONS["logo"]))
 
@@ -84,7 +83,6 @@ class Sidebar(QWidget):
         tb.setObjectName("toggle")
         
         if "panel" in ICONS:
-            # Przycisk zwijania panelu (jeśli to ścieżka do pliku lub QIcon)
             val = ICONS["panel"]
             if not val.startswith("<"):
                 tb.setIcon(QIcon(val))
