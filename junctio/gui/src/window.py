@@ -5,7 +5,7 @@
 from pathlib import Path
 
 from PySide6.QtCore import QSettings, QTimer
-from PySide6.QtGui import QKeySequence, QShortcut
+from PySide6.QtGui import QKeySequence, QShortcut, QIcon
 from PySide6.QtWidgets import (QFileDialog, QFrame, QHBoxLayout, QMainWindow, QMessageBox, QStackedWidget,
                                QVBoxLayout, QWidget, QApplication)
 
@@ -24,6 +24,7 @@ class MainWindow(QMainWindow):
         super().__init__()
         screen = QApplication.primaryScreen().availableGeometry()
         self.resize(int(screen.width()* 0.85), int(screen.height() * 0.85))
+        self.setWindowIcon(QIcon("./junctio/gui/images/icons/Juntio_Icon.svg"))
         self.setMinimumSize(1000, 640)
         self.move(screen.center() - self.rect().center())
         self.session = Session(backend)

@@ -3,13 +3,13 @@
 # importy z pakietów standardowych
 
 from PySide6.QtCore import QSize, Qt, Signal
-from PySide6.QtGui import QIcon
+from PySide6.QtGui import QIcon, QPixmap
 from PySide6.QtWidgets import (QButtonGroup, QFrame, QHBoxLayout, QLabel, QPushButton, QToolButton, QVBoxLayout,
                                QWidget)
 
 # importy ikon i etykiet
 
-from icons import logo_pix, pix
+from icons import ICONS
 from ui_common import label
 
 
@@ -17,32 +17,46 @@ from ui_common import label
 
 class NavItem(QPushButton):
 
-    def __init__(self, icon, text, value=None, checkable=True):
+    def __init__(self, icon_key, text, value=None, checkable=True):
         super().__init__()
         self.setObjectName("nav")
         self.setCheckable(checkable)
         self.setCursor(Qt.PointingHandCursor)
         self.setFixedHeight(36)
-        self._icon = icon
+        self._icon_key = icon_key
+
         lay = QHBoxLayout(self)
         lay.setContentsMargins(12, 0, 12, 0)
         lay.setSpacing(12)
-        self.ico, self.txt, self.val = QLabel(), QLabel(text), label(value or "", "muted")
+
+        # Przywrócenie osobnej etykiety na ikonę, aby nie nachodziła na tekst
+        self.ico = QLabel()
+        self.ico.setFixedSize(20, 20)
+        self.ico.setScaledContents(True)
+
+        if icon_key in ICONS:
+            # Sprawdzamy czy w ICONS jest ścieżka (string) czy surowy kod SVG
+            val = ICONS[icon_key]
+            if val.startswith("<"):
+                # Jeśli to SVG w tekście, możemy użyć QIcon / pixmap lub pominąć w tym uproszczeniu,
+                # ale standardowo w icons.py masz ścieżki do plików.
+                pass
+            else:
+                self.ico.setPixmap(QPixmap(val))
+
+        self.txt, self.val = QLabel(text), label(value or "", "muted")
         for w in (self.ico, self.txt, self.val):
             w.setAttribute(Qt.WA_TransparentForMouseEvents)
+
         lay.addWidget(self.ico)
         lay.addWidget(self.txt)
         lay.addStretch()
         lay.addWidget(self.val)
-        self.toggled.connect(self._paint)
-        self._paint()
-
-    def _paint(self, *_):
-        self.ico.setPixmap(pix(self._icon, "#111111" if self.isChecked() else "#555555"))
 
     def compact(self, on):
         self.txt.setVisible(not on)
         self.val.setVisible(not on and bool(self.val.text()))
+        self.ico.setVisible(True) # ikonę można zostawić widoczną w trybie kompaktowym
 
 """Pełny pasek boczny z grupami zakładek """
 
@@ -59,12 +73,22 @@ class Sidebar(QWidget):
 
         head = QHBoxLayout()
         head.setSpacing(12)
+        
         self.logo = QLabel()
-        self.logo.setPixmap(logo_pix())
+        # Jeśli masz logo w ICONS, możesz je tutaj ustawić:
+        if "logo" in ICONS:
+            self.logo.setPixmap(QPixmap(ICONS["logo"]))
+
         self.brand = label("Junctio", "brand")
         tb = QToolButton()
         tb.setObjectName("toggle")
-        tb.setIcon(QIcon(pix("panel", "#555555", 22)))
+        
+        if "panel" in ICONS:
+            # Przycisk zwijania panelu (jeśli to ścieżka do pliku lub QIcon)
+            val = ICONS["panel"]
+            if not val.startswith("<"):
+                tb.setIcon(QIcon(val))
+        
         tb.setIconSize(QSize(22, 22))
         tb.setFixedSize(34, 34)
         tb.setCursor(Qt.PointingHandCursor)
@@ -128,7 +152,10 @@ class Sidebar(QWidget):
         bl = QHBoxLayout(box)
         bl.setContentsMargins(0, 0, 0, 0)
         fi = QLabel()
-        fi.setPixmap(pix("file", "#555555", 20))
+        fi.setFixedSize(20, 20)
+        fi.setScaledContents(True)
+        if "file" in ICONS and not ICONS["file"].startswith("<"):
+            fi.setPixmap(QPixmap(ICONS["file"]))
         fi.setAlignment(Qt.AlignCenter)
         bl.addWidget(fi)
         self.fname, self.fstat = label("", "small"), label("", "small")
