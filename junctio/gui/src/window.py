@@ -7,7 +7,7 @@ from pathlib import Path
 from PySide6.QtCore import QSettings, QTimer
 from PySide6.QtGui import QKeySequence, QShortcut
 from PySide6.QtWidgets import (QFileDialog, QFrame, QHBoxLayout, QMainWindow, QMessageBox, QStackedWidget,
-                               QVBoxLayout, QWidget)
+                               QVBoxLayout, QWidget, QApplication)
 
 # importy okien aplikacji, paska bocznego i łącznika Session
 from pages import EditorPage, FilesPage, PhasesPage, SimulationPage, StatsPage
@@ -22,8 +22,10 @@ from sidebar import Sidebar
 class MainWindow(QMainWindow):
     def __init__(self, backend):
         super().__init__()
-        self.resize(1440, 1024)
+        screen = QApplication.primaryScreen().availableGeometry()
+        self.resize(int(screen.width()* 0.85), int(screen.height() * 0.85))
         self.setMinimumSize(1000, 640)
+        self.move(screen.center() - self.rect().center())
         self.session = Session(backend)
         self.settings = QSettings("Junctio", "Junctio")
 
