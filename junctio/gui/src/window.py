@@ -70,7 +70,7 @@ class MainWindow(QMainWindow):
     def _sync(self):
         d = self.session.doc
         self.sidebar.set_file(d.name, self.session.doc_status())
-        self.setWindowTitle(f"Junctio - symulator skrzyżowań – {d.name}{' *' if d.dirty else ''}")
+        self.setWindowTitle(f"{d.name}{' *' if d.dirty else ''} - Junctio - symulator skrzyżowań")
         self.files.refresh()
 
     # --- ostatnie pliki ---
