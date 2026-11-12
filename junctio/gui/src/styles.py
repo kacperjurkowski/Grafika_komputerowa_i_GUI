@@ -11,7 +11,6 @@ QLabel#title { font-size: 22px; font-weight: 600; }
 QLabel#h { font-size: 14px; font-weight: 600; }
 QFrame#line { background: #D9DADD; }
 QFrame#card { background: #E8E8E8; border-radius: 10px; }
-QFrame#panel { background: white; border-radius: 12px; }
 QFrame#fileicon { background: white; border-radius: 10px; }
 QPushButton#nav { background: transparent; border: none; border-radius: 8px; text-align: left; }
 QPushButton#nav:hover { background: #E8E9ED; }
@@ -22,7 +21,6 @@ QPushButton#nav QLabel#muted { color: #8A8A8A; font-size: 12px; }
 QPushButton#btn:checked, QPushButton#primary { background: #1A1A1A; color: white; }
 QToolButton#toggle { border: none; background: transparent; border-radius: 6px; }
 QToolButton#toggle:hover { background: #E8E9ED; }
-QListWidget { background: transparent; border: none; outline: none; }
 QListWidget::item { padding: 6px 8px; border-radius: 6px; }
 QListWidget::item:selected { background: #EDEEF2; color: #000000; }
 QSpinBox, QDoubleSpinBox, QComboBox { background: #F4F4F6; border: 1px solid #E0E0E4; border-radius: 6px; padding: 4px 6px; }
@@ -30,9 +28,8 @@ QPushButton#tool { background: white; color: #000000; border: 1px solid #D9DADD;
 QPushButton#tool:hover   { background: #E8E9ED; }
 QPushButton#tool:checked { background: #E8E9ED; }
 QPushButton#tool:pressed { background: #E8E9ED; }
-QFrame#panel { background: #F4F4F6; color: #000000; border: 1px solid #E0E0E4; border-radius: 6px; padding: 6px 12px; font-family: "Segoe UI"; font-size: 14px; font-weight: 600; }
-QListWidget { background: #F4F4F6; color: #000000; border: 1px solid #E0E0E4; border-radius: 6px; padding: 6px 12px; font-family: "Segoe UI"; font-size: 14px; font-weight: 600; }
-QStackedWidget { background: #F4F4F6; color: #000000; border: 1px solid #E0E0E4; border-radius: 6px; padding: 6px 12px; font-family: "Segoe UI"; font-size: 14px; font-weight: 600; }
+QFrame#panel { background: #F4F4F6; color: #000000; border: 1px solid #E0E0E4; border-radius: 6px; padding: 6px 12px; font-family: "Segoe UI"; font-size: 14px; }
+QListWidget { background: #F4F4F6; color: #000000; border: 1px solid #E0E0E4; border-radius: 6px; padding: 6px 12px; font-family: "Segoe UI"; font-size: 14px; }
 QDialog, QMessageBox { background: #F3F4F6; }
 QMessageBox QLabel { color: #1A1A1A; font-size: 14px; }
 QMessageBox QPushButton { background: white; color: #000000; border: 1px solid #D9DADD; border-radius: 8px; padding: 8px 16px; font-family: "Segoe UI"; font-size: 14px; font-weight: 600; }
