@@ -9,8 +9,10 @@ from PySide6.QtWidgets import (QButtonGroup, QFrame, QHBoxLayout, QLabel, QPushB
 
 # importy ikon i etykiet
 
-from icons import ICONS
+from assets.theme import icons
 from ui_common import label
+
+ICONS = icons.ICONS
 
 
 """Pojedyncza pozycja panelu bocznego (ikona + tekst + opcjonalna wartość po prawej)."""
@@ -45,6 +47,8 @@ class NavItem(QPushButton):
                 self.ico.setPixmap(QPixmap(val))
 
         self.txt, self.val = QLabel(text), label(value or "", "muted")
+        self.txt.setObjectName("navText")
+        self.txt.setProperty("active", False)
         for w in (self.ico, self.txt, self.val):
             w.setAttribute(Qt.WA_TransparentForMouseEvents)
 
@@ -53,10 +57,17 @@ class NavItem(QPushButton):
         lay.addStretch()
         lay.addWidget(self.val)
 
+        self.toggled.connect(self.set_active)
+
     def compact(self, on):
         self.txt.setVisible(not on)
         self.val.setVisible(not on and bool(self.val.text()))
         self.ico.setVisible(True) # ikonę można zostawić widoczną w trybie kompaktowym
+
+    def set_active(self, active):
+            self.txt.setProperty("active", active)
+            self.txt.style().unpolish(self.txt)
+            self.txt.style().polish(self.txt)
 
 """Pełny pasek boczny z grupami zakładek """
 
@@ -100,6 +111,8 @@ class Sidebar(QWidget):
         v.addWidget(self._line())
 
         self.group, self.items, self.sections = QButtonGroup(self), [], []
+
+        self.group.setExclusive(True)
 
         """ Grupy zakładek w pasku bocznym """
 
@@ -150,8 +163,7 @@ class Sidebar(QWidget):
         bl = QHBoxLayout(box)
         bl.setContentsMargins(0, 0, 0, 0)
         fi = QLabel()
-        fi.setFixedSize(20, 20)
-        fi.setScaledContents(True)
+        fi.setFixedSize(42, 42)
         if "file" in ICONS and not ICONS["file"].startswith("<"):
             fi.setPixmap(QPixmap(ICONS["file"]))
         fi.setAlignment(Qt.AlignCenter)
@@ -177,6 +189,7 @@ class Sidebar(QWidget):
 
     def set_current(self, idx):
         self.group.button(idx).setChecked(True)
+
 
     def set_file(self, name, status):
         self.fname.setText(name)

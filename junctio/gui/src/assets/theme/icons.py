@@ -1,13 +1,4 @@
-"""Ikony liniowe (SVG renderowane do QPixmap) oraz logo."""
-
-# importy pakietów standardowych
-import math
-
-from PySide6.QtCore import QByteArray, QPointF, QRectF, Qt
-from PySide6.QtGui import QColor, QPainter, QPixmap
-from PySide6.QtSvg import QSvgRenderer
-
-# importy ikon SVG
+""" Importy ikon SVG. """
 
 ICONS = {
     "logo"      : "./junctio/gui/images/icons/Juntio_Icon.svg",

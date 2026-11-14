@@ -5,26 +5,26 @@ Uruchomienie:  python main.py           (uruchomienie z podłączalnymi modułam
 Podłączanie prawdziwych modułów: wiring.py.
 """
 
-# importy z pakietów standardowych
 import sys
 
-from PySide6.QtGui          import QFont
-from PySide6.QtWidgets      import QApplication
+from PySide6.QtGui     import QFont
+from PySide6.QtWidgets import QApplication
 
-# importy stylów GUI, okna głównego i API do modułów
-from styles import STYLE
+from assets.theme import styles, fonts, colors
 from window import MainWindow
 from wiring import create_backend
 
 
-# Uruchomienie frontu
 def main():
     app = QApplication(sys.argv)
-    font = QFont()
-    font.setFamilies(["Poppins", "Segoe UI", "Inter", "Arial"])
+
+    fonts.load_fonts()                              # po utworzeniu QApplication
+    font = QFont(fonts.FONTS["regular"])
     font.setPointSizeF(10.5)
     app.setFont(font)
-    app.setStyleSheet(STYLE)
+
+    app.setStyleSheet(styles.build(colors.LIGHT))   # po load_fonts()
+
     win = MainWindow(create_backend(demo="--demo" in sys.argv))
     win.show()
     sys.exit(app.exec())

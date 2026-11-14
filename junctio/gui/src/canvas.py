@@ -16,12 +16,10 @@ from PySide6.QtWidgets import QWidget
 # importy modelu danych
 
 from contracts import NODE, ROAD, ElementRef
+from assets.theme import colors
 
 # Kolory należą do warstwy GUI; nieznane klucze dostają kolor domyślny.
-NODE_COLORS = {"brak": "#7A7A7A", "swiatla": "#2E9E5B", "pierwszenstwo": "#2F6FED",
-               "stop": "#D64545", "stop_wszystkie": "#8E3FD1"}                                # kolory węzłów – można zmienić lub dodać inne warianty
-VEHICLE_COLORS = {"car": "#2F6FED", "truck": "#E5A100", "bus": "#8E3FD1"}                   # dodatkowe przykładowe samochody - można usunąć lub dodać inne warianty
-SIGNAL_COLORS = {"red": "#D64545", "yellow": "#E5A100", "green": "#2E9E5B"}                 # kolory sygnalizatorów - można zmienić lub dodać inne warianty
+COLORS = colors.LIGHT
 HIT_TOLERANCE_PX = 11
 
 """ Deklaracja obszaru roboczego - widget rysujące scenę i przekazujący zdarzenia do modułów. 
@@ -111,30 +109,30 @@ class Canvas(QWidget):
         clip = QPainterPath()
         clip.addRoundedRect(QRectF(self.rect()), 12, 12)
         p.setClipPath(clip)
-        p.fillPath(clip, QColor("#F4F4F6"))
+        p.fillPath(clip, QColor(COLORS.get("APP_BACKGROUND")))
         self._grid(p)
         sc = self.session.scene
         for r in sc.roads:
             self._road(p, r)
         for a in sc.areas:
             if len(a) > 2:
-                p.fillPath(self._path(a, True), QColor("#4B4F57"))
+                p.fillPath(self._path(a, True), QColor(COLORS.get("HELPER_TEXT"))) # potrzeba dodatkowego koloru?
         for n in sc.nodes:
             self._node(p, n)
         if self.mode == "view":
             for h in self.session.heads:
-                p.setPen(QPen(QColor("#FFFFFF"), 1.5))
-                p.setBrush(QColor(SIGNAL_COLORS.get(h.state, "#9A9A9A")))
+                p.setPen(QPen(QColor(COLORS.get("PANEL")), 1.5))
+                p.setBrush(QColor(COLORS.get("car")))          # potrzeba nowego koloru?
                 p.drawEllipse(self.pt(h.x, h.y), 5, 5)
             for v in self.session.vehicles:
                 self._vehicle(p, v)
         if self.tool == "road" and self.start:
             a = next((n for n in sc.nodes if n.id == self.start), None)
             if a:
-                p.setPen(QPen(QColor("#2F6FED"), 2, Qt.DashLine))
+                p.setPen(QPen(QColor(COLORS.get("bus")), 2, Qt.DashLine))           # potrzeba nowego koloru?
                 p.drawLine(self.pt(a.x, a.y), self.cur)
         p.setBrush(Qt.NoBrush)
-        p.setPen(QColor("#8A8A8A"))
+        p.setPen(QColor(COLORS.get("HELPER_TEXT")))
         if not self.session.g.available:
             p.drawText(self.rect(), Qt.AlignCenter, "Moduł geometrii nie jest podłączony.")
         hint = ("Kółko myszy: zoom  ·  przeciąganie tła: przesuwanie  ·  Del: usuń zaznaczone" if self.mode == "edit"
@@ -147,7 +145,7 @@ class Canvas(QWidget):
         step = 10 if self.s * 10 >= 14 else 50
         x0, y1 = self.world(QPointF(0, 0))
         x1, y0 = self.world(QPointF(self.width(), self.height()))
-        p.setPen(QPen(QColor("#E2E2E6"), 1))
+        p.setPen(QPen(QColor(COLORS.get("LINES")), 1))
         for i in range(math.ceil(x0 / step), math.floor(x1 / step) + 1):
             x = self.pt(i * step, 0).x()
             p.drawLine(QPointF(x, 0), QPointF(x, self.height()))
@@ -159,36 +157,41 @@ class Canvas(QWidget):
 
     def _road(self, p, r):
         sel = self.mode == "edit" and self.session.selection == ElementRef(ROAD, r.id)
-        base = QColor("#34373D" if r.is_main else "#5B6068")
+
+        # rysowanie pasa drogi
+        base = QColor(COLORS.get("HELPER_TEXT")) # nowy kolor do obszaru roboczego?
+
         if len(r.surface) > 2:
-            p.setPen(QPen(QColor("#2F6FED"), 3) if sel else QPen(Qt.NoPen))
+            p.setPen(QPen(QColor(COLORS.get("car")), 3) if sel else QPen(Qt.NoPen))         # nowy kolor na zaznaczenie?
             p.setBrush(base)
             p.drawPath(self._path(r.surface, True))
             p.setBrush(Qt.NoBrush)
-            p.setPen(QPen(QColor("#E8E8E8"), 1.2, Qt.DashLine))
+
+            # rysowanie lini na drodze
+            p.setPen(QPen(QColor(COLORS.get("ACTIVE_POS")), 1.2, Qt.DashLine))
             for ln in r.lane_lines:
                 if len(ln) > 1:
                     p.drawPath(self._path(ln))
         elif len(r.center_line) > 1:  # moduł podał tylko oś drogi – rysujemy ją jako grubą linię
             path = self._path(r.center_line)
             if sel:
-                p.setPen(QPen(QColor("#2F6FED"), 8, Qt.SolidLine, Qt.FlatCap, Qt.RoundJoin))
+                p.setPen(QPen(QColor(COLORS.get("car")), 8, Qt.SolidLine, Qt.FlatCap, Qt.RoundJoin))        # nowy kolor na zaznaczenie?
                 p.drawPath(path)
             p.setPen(QPen(base, 4, Qt.SolidLine, Qt.FlatCap, Qt.RoundJoin))
             p.drawPath(path)
 
     """ Rysowanie węzła w edycji """
 
-    def _node(self, p, n):
-        c = self.pt(n.x, n.y)
-        edit = self.mode == "edit"
-        active = edit and (self.session.selection == ElementRef(NODE, n.id) or self.start == n.id)
-        p.setPen(QPen(QColor("#2F6FED") if active else QColor("#FFFFFF"), 2.5))
-        p.setBrush(QColor(NODE_COLORS.get(n.kind, "#7A7A7A")))
-        p.drawEllipse(c, 8 if edit else 4, 8 if edit else 4)
-        if edit:
-            p.setBrush(Qt.NoBrush)
-            p.setPen(QColor("#333333"))
+    def _node(self, p, n):        
+        c = self.pt(n.x, n.y)        
+        edit = self.mode == "edit"        
+        active = edit and (self.session.selection == ElementRef(NODE, n.id) or self.start == n.id)        
+        p.setPen(QPen(QColor(COLORS.get("car")) if active else QColor(COLORS.get("PANEL")), 2.5))        
+        p.setBrush(QColor(COLORS.get(n.kind, "#7A7A7A")))        
+        p.drawEllipse(c, 8 if edit else 4, 8 if edit else 4)        
+        if edit:            
+            p.setBrush(Qt.NoBrush)            
+            p.setPen(QColor("#333333"))            
             p.drawText(QPointF(c.x() + 12, c.y() - 10), n.id)
 
     """ Rysowanie pojazdu podczas symulacji """
@@ -198,8 +201,8 @@ class Canvas(QWidget):
         p.translate(self.pt(v.x, v.y))
         p.rotate(-math.degrees(v.heading))  # oś Y ekranu jest odwrócona względem świata
         length, width = max(5.0, v.length * self.s), max(3.0, v.width * self.s)
-        p.setPen(QPen(QColor("#FFFFFF"), 1))
-        p.setBrush(QColor(v.color or VEHICLE_COLORS.get(v.kind, "#2F6FED")))
+        p.setPen(QPen(QColor(COLORS.get("PANEL")), 1))
+        p.setBrush(QColor(v.color or COLORS.get("car")))                                    # tu wrocic
         p.drawRoundedRect(QRectF(-length / 2, -width / 2, length, width), 2, 2)
         p.restore()
 
