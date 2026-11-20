@@ -1,0 +1,82 @@
+{
+  "version": 1,
+  "wezly": [
+    {
+      "id": "C",
+      "x": 0,
+      "y": 0,
+      "rodzaj": "swiatla"
+    },
+    {
+      "id": "N",
+      "x": 0,
+      "y": 100,
+      "rodzaj": "brak"
+    },
+    {
+      "id": "E",
+      "x": 100,
+      "y": 0,
+      "rodzaj": "brak"
+    },
+    {
+      "id": "S",
+      "x": 0,
+      "y": -100,
+      "rodzaj": "brak"
+    },
+    {
+      "id": "W",
+      "x": -100,
+      "y": 0,
+      "rodzaj": "brak"
+    }
+  ],
+  "drogi": [
+    {
+      "id": "D1",
+      "od": "N",
+      "do": "C",
+      "ksztalt": [],
+      "pasy_tam": 1,
+      "pasy_powrot": 1,
+      "predkosc_kmh": 50,
+      "glowna": true
+    },
+    {
+      "id": "D2",
+      "od": "S",
+      "do": "C",
+      "ksztalt": [],
+      "pasy_tam": 1,
+      "pasy_powrot": 1,
+      "predkosc_kmh": 50,
+      "glowna": true
+    },
+    {
+      "id": "D3",
+      "od": "E",
+      "do": "C",
+      "ksztalt": [],
+      "pasy_tam": 1,
+      "pasy_powrot": 1,
+      "predkosc_kmh": 50,
+      "glowna": false
+    },
+    {
+      "id": "D4",
+      "od": "W",
+      "do": "C",
+      "ksztalt": [
+        [
+          -50,
+          10
+        ]
+      ],
+      "pasy_tam": 1,
+      "pasy_powrot": 1,
+      "predkosc_kmh": 50,
+      "glowna": false
+    }
+  ]
+}
